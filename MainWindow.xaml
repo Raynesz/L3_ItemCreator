@@ -1,0 +1,39 @@
+﻿<Window x:Class="L3_ItemCreator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:L3_ItemCreator"
+        mc:Ignorable="d"
+        Title="L3::ItemCreator" Height="585" Width="320">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="New" InputGestureText="Ctrl+N" />
+                <MenuItem Header="Open" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="Save" InputGestureText="Ctrl+S" />
+                <Separator />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Cut" InputGestureText="Ctrl+X" />
+                <MenuItem Header="Copy" InputGestureText="Ctrl+C" />
+                <MenuItem Header="Paste" InputGestureText="Ctrl+V" />
+            </MenuItem>
+            <!-- Add more menu items as needed -->
+        </Menu>
+        <Grid RenderTransformOrigin="0,0" Width="320" Height="550">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
+                <Label Content="Quality:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <ComboBox x:Name="ItemQuality" IsDropDownOpen="False" SelectionChanged="ItemQuality_SelectionChanged" SelectedIndex="1" Width="100" FontWeight="Bold" FontStyle="Italic" Height="25">
+                    <ComboBoxItem Content="Poor" Foreground="Gray" />
+                    <ComboBoxItem Content="Common" Foreground="Black" />
+                    <ComboBoxItem Content="Uncommon" Foreground="Green" />
+                    <ComboBoxItem Content="Rare" Foreground="Blue" />
+                    <ComboBoxItem Content="Epic" Foreground="Purple" />
+                    <ComboBoxItem Content="Legendary" Foreground="Orange" />
+                </ComboBox>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
