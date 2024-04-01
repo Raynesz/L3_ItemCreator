@@ -15,12 +15,19 @@
                 <Separator />
                 <MenuItem Header="Exit" />
             </MenuItem>
+            <MenuItem Header="Item">
+                <MenuItem Header="New Item" />
+            </MenuItem>
         </Menu>
-        <Grid DockPanel.Dock="Top" Background="#F0F0F0" Height="330">
+        <Grid DockPanel.Dock="Top" Background="#F0F0F0" Height="263" >
             <StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Name:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <TextBox Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
+                    <Label Content="Type:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <TextBox Width="100" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Quality:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
@@ -32,11 +39,8 @@
                         <ComboBoxItem Content="Epic" Foreground="#a335ee" />
                         <ComboBoxItem Content="Legendary" Foreground="#ff8000" />
                     </ComboBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
-                    <Label Content="Level:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Label Content="Level:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="40,0,0,0" />
                     <TextBox Width="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <CheckBox Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="65,0,0,0" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Mesh:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
@@ -45,6 +49,7 @@
                         <RadioButton Content="Sphere" />
                         <RadioButton Content="Pyramid" />
                     </StackPanel>
+                    <CheckBox Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="65,0,0,0" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,20,0,0">
                     <Button Content="Create" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25"/>
@@ -52,8 +57,8 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
-        <StackPanel DockPanel.Dock="Bottom" Height="200" VerticalAlignment="Bottom" >
-            <ListBox x:Name="itemDBListBox" Width="320" Height="170">
+        <StackPanel DockPanel.Dock="Bottom" Height="288" >
+            <ListBox x:Name="itemDBListBox" Width="320" Height="235">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
