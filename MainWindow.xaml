@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="L3::ItemCreator" Height="585" Width="320">
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" Background="#E0E0E0" VerticalAlignment="Top" >
             <MenuItem Header="File">
                 <MenuItem Header="New" InputGestureText="Ctrl+N" />
                 <MenuItem Header="Open" InputGestureText="Ctrl+O"/>
@@ -15,25 +15,89 @@
                 <Separator />
                 <MenuItem Header="Exit" />
             </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Cut" InputGestureText="Ctrl+X" />
-                <MenuItem Header="Copy" InputGestureText="Ctrl+C" />
-                <MenuItem Header="Paste" InputGestureText="Ctrl+V" />
-            </MenuItem>
-            <!-- Add more menu items as needed -->
         </Menu>
-        <Grid RenderTransformOrigin="0,0" Width="320" Height="550">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
-                <Label Content="Quality:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                <ComboBox x:Name="ItemQuality" IsDropDownOpen="False" SelectionChanged="ItemQuality_SelectionChanged" SelectedIndex="1" Width="100" FontWeight="Bold" FontStyle="Italic" Height="25">
-                    <ComboBoxItem Content="Poor" Foreground="Gray" />
-                    <ComboBoxItem Content="Common" Foreground="Black" />
-                    <ComboBoxItem Content="Uncommon" Foreground="Green" />
-                    <ComboBoxItem Content="Rare" Foreground="Blue" />
-                    <ComboBoxItem Content="Epic" Foreground="Purple" />
-                    <ComboBoxItem Content="Legendary" Foreground="Orange" />
-                </ComboBox>
+        <Grid DockPanel.Dock="Top" Background="#F0F0F0" Height="330">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
+                    <Label Content="Name:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <TextBox Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
+                    <Label Content="Quality:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <ComboBox x:Name="ItemQuality" IsDropDownOpen="False" SelectionChanged="ItemQuality_SelectionChanged" SelectedIndex="1" Width="100" FontWeight="Bold" Height="25">
+                        <ComboBoxItem Content="Poor" Foreground="Gray" />
+                        <ComboBoxItem Content="Common" Foreground="Black" />
+                        <ComboBoxItem Content="Uncommon" Foreground="#1eb000" />
+                        <ComboBoxItem Content="Rare" Foreground="#0070dd" />
+                        <ComboBoxItem Content="Epic" Foreground="#a335ee" />
+                        <ComboBoxItem Content="Legendary" Foreground="#ff8000" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
+                    <Label Content="Level:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <TextBox Width="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <CheckBox Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="65,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
+                    <Label Content="Mesh:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <StackPanel>
+                        <RadioButton Content="Cube" />
+                        <RadioButton Content="Sphere" />
+                        <RadioButton Content="Pyramid" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,20,0,0">
+                    <Button Content="Create" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25"/>
+                    <Button Content="Discard" Margin="15,0,0,0" Width="55"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
+        <StackPanel DockPanel.Dock="Bottom" Height="200" VerticalAlignment="Bottom" >
+            <ListBox x:Name="itemDBListBox" Width="320" Height="170">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="5" >
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Quality}" Value="Legendary">
+                                                <Setter Property="Foreground" Value="#ff8000"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Quality}" Value="Epic">
+                                                <Setter Property="Foreground" Value="#a335ee"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Quality}" Value="Rare">
+                                                <Setter Property="Foreground" Value="#0070dd"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Quality}" Value="Uncommon">
+                                                <Setter Property="Foreground" Value="#1eb000"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Quality}" Value="Common">
+                                                <Setter Property="Foreground" Value="#000000"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Quality}" Value="Poor">
+                                                <Setter Property="Foreground" Value="Gray"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Text="{Binding Level, StringFormat=iLvl: {0}}" Margin="5" />
+                            <TextBlock Text="{Binding IType}" Margin="5" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StatusBar Background="#E0E0E0" VerticalContentAlignment="Center" Height="30" >
+                <StatusBarItem>
+                    <TextBlock Text="File: ItemDB.json" />
+                </StatusBarItem>
+                <Separator />
+                <StatusBarItem VerticalContentAlignment="Center">
+                    <TextBlock Text="Editing: Gorehowl" />
+                </StatusBarItem>
+            </StatusBar>
+        </StackPanel>
     </DockPanel>
 </Window>
