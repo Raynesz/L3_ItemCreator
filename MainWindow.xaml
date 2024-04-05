@@ -9,8 +9,8 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="#E0E0E0" VerticalAlignment="Top" >
             <MenuItem Header="File">
-                <MenuItem Header="New" InputGestureText="Ctrl+N" />
-                <MenuItem Header="Open" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="New"  Click="NewMenuItem_Click" InputGestureText="Ctrl+N" />
+                <MenuItem Header="Open" Click="OpenExistingFile" InputGestureText="Ctrl+O"/>
                 <MenuItem Header="Save" InputGestureText="Ctrl+S" />
                 <Separator />
                 <MenuItem Header="Exit" />
@@ -27,11 +27,11 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Type:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <TextBox Width="100" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBox Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Quality:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <ComboBox x:Name="ItemQuality" IsDropDownOpen="False" SelectionChanged="ItemQuality_SelectionChanged" SelectedIndex="1" Width="100" FontWeight="Bold" Height="25">
+                    <ComboBox x:Name="ItemQuality" IsDropDownOpen="False" SelectedIndex="1" Width="100" FontWeight="Bold" Height="25">
                         <ComboBoxItem Content="Poor" Foreground="Gray" />
                         <ComboBoxItem Content="Common" Foreground="Black" />
                         <ComboBoxItem Content="Uncommon" Foreground="#1eb000" />
@@ -39,7 +39,7 @@
                         <ComboBoxItem Content="Epic" Foreground="#a335ee" />
                         <ComboBoxItem Content="Legendary" Foreground="#ff8000" />
                     </ComboBox>
-                    <Label Content="Level:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="40,0,0,0" />
+                    <Label Content="Level:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="30,0,0,0" />
                     <TextBox Width="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
@@ -49,16 +49,16 @@
                         <RadioButton Content="Sphere" />
                         <RadioButton Content="Pyramid" />
                     </StackPanel>
-                    <CheckBox Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="65,0,0,0" />
+                    <CheckBox Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="55,0,0,0" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,20,0,0">
-                    <Button Content="Create" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25"/>
-                    <Button Content="Discard" Margin="15,0,0,0" Width="55"/>
+                    <Button Content="Create" Click="Create_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25"/>
+                    <Button Content="Discard" Click="Discard_Button_Click" Margin="15,0,0,0" Width="55"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
         <StackPanel DockPanel.Dock="Bottom" Height="288" >
-            <ListBox x:Name="itemDBListBox" Width="320" Height="235">
+            <ListBox ItemsSource="{Binding ItemDB}" Width="305" Height="235">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -96,11 +96,21 @@
             </ListBox>
             <StatusBar Background="#E0E0E0" VerticalContentAlignment="Center" Height="30" >
                 <StatusBarItem>
-                    <TextBlock Text="File: ItemDB.json" />
+                    <TextBlock Margin="5,0,0,0">
+                        <Bold>
+                            <Run Text="File: " />
+                        </Bold>
+                        <Run Text="{Binding MFilePath}" />
+                    </TextBlock>
                 </StatusBarItem>
                 <Separator />
                 <StatusBarItem VerticalContentAlignment="Center">
-                    <TextBlock Text="Editing: Gorehowl" />
+                    <TextBlock>
+                        <Bold>
+                            <Run Text="Editing: " />
+                        </Bold>
+                        <Run Text="Gorehowl" />
+                    </TextBlock>
                 </StatusBarItem>
             </StatusBar>
         </StackPanel>
