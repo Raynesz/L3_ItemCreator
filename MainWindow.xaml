@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:L3_ItemCreator"
         mc:Ignorable="d"
-        Title="L3::ItemCreator" Height="585" Width="320">
+        Title="L3::ItemCreator" Height="585" Width="321"
+        ResizeMode="NoResize">
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="#E0E0E0" VerticalAlignment="Top" >
             <MenuItem Header="File">
@@ -100,7 +101,7 @@
                         <Bold>
                             <Run Text="File: " />
                         </Bold>
-                        <Run Text="{Binding MFilePath}" />
+                        <Run Text="{Binding MFileName}" />
                     </TextBlock>
                 </StatusBarItem>
                 <Separator />

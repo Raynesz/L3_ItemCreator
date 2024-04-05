@@ -26,14 +26,71 @@ namespace L3_ItemCreator
     /// </summary>
     /// 
 
-    public class Item(string name, string quality, string iType, int level, bool uniqueEquipped, string mesh)
+    public class Item : INotifyPropertyChanged
     {
-        public string Name { get; set; } = name;
-        public string Quality { get; set; } = quality;
-        public string IType { get; set; } = iType;
-        public int Level { get; set; } = level;
-        public bool UniqueEquipped { get; set; } = uniqueEquipped;
-        public string Mesh { get; set; } = mesh;
+        private string _name = "";
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        private string _quality = "";
+        public string Quality
+        {
+            get { return _quality; }
+            set
+            {    
+                _quality = value;
+                OnPropertyChanged(nameof(Quality)); 
+            }
+        }
+
+        private int _level = 0;
+        public int Level
+        {
+            get { return _level; }
+            set
+            {
+                _level = value;
+                OnPropertyChanged(nameof(Level));
+            }
+        }
+
+        private string _iType = "";
+        public string IType
+        {
+            get { return _iType; }
+            set
+            {
+                _iType = value;
+                OnPropertyChanged(nameof(IType));
+            }
+        }
+
+        public bool UniqueEquipped { get; set; }
+        public string Mesh { get; set; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public Item(string name, string quality, string iType, int level, bool uniqueEquipped, string mesh)
+        {
+            Name = name;
+            Quality = quality;
+            IType = iType;
+            Level = level;
+            UniqueEquipped = uniqueEquipped;
+            Mesh = mesh;
+        }
     }
 
     public class FileManager
@@ -76,15 +133,28 @@ namespace L3_ItemCreator
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private string _mFileName = "No File";
+        public string MFileName
+        {
+            get { return _mFileName; }
+            set
+            {
+                _mFileName = value;
+                OnPropertyChanged(nameof(MFileName));
+            }
+        }
+
         private string _mFilePath = "No File";
         public string MFilePath {
             get { return _mFilePath; }
             set
             {
                 _mFilePath = value;
+                MFileName = System.IO.Path.GetFileName(value);
                 OnPropertyChanged(nameof(MFilePath));
             }
         }
+
         private List<Item> _itemDB = [];
         public List<Item> ItemDB
         {
@@ -128,16 +198,16 @@ namespace L3_ItemCreator
 
         private void Create_Button_Click(object sender, RoutedEventArgs e)
         {
-            MFilePath = "123";
+            //MFilePath = "123";
+            Debug.WriteLine(MFileName);
         }
 
         private void Discard_Button_Click(object sender, RoutedEventArgs e)
         {
-            List<Item> TempDB = ItemDB;
-            TempDB[2].Quality = "Uncommon";
-            ItemDB = TempDB;
-            Debug.WriteLine(ItemDB[2].Name);
-            Debug.WriteLine(ItemDB[2].Quality);
+            ItemDB[2].Name = "Fyralath";
+            ItemDB[2].Quality = "Uncommon";
+            ItemDB[2].Level = 496;
+            ItemDB[2].IType = "2H Axe";
         }
 
         private void NewMenuItem_Click(object sender, RoutedEventArgs e)
