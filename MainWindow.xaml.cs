@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
+using System.Collections;
+using System.Collections.ObjectModel;
 
 namespace L3_ItemCreator
 {
@@ -98,15 +100,15 @@ namespace L3_ItemCreator
         public string FilePath = "";
         private readonly JsonSerializerOptions JsonSO = new() { WriteIndented = true };
 
-        public List<Item> LoadItems()
+        public ObservableCollection<Item> LoadItems()
         {
-            List<Item> items = [];
+            ObservableCollection<Item> items = [];
             try
             {
                 if (File.Exists(FilePath))
                 {
                     string json = File.ReadAllText(FilePath);
-                    items = JsonSerializer.Deserialize<List<Item>>(json);
+                    items = JsonSerializer.Deserialize<ObservableCollection<Item>>(json);
                 }
             }
             catch (Exception ex)
@@ -116,7 +118,7 @@ namespace L3_ItemCreator
             return items;
         }
 
-        public void SaveItems(List<Item> items)
+        public void SaveItems(ObservableCollection<Item> items)
         {
             try
             {
@@ -155,8 +157,8 @@ namespace L3_ItemCreator
             }
         }
 
-        private List<Item> _itemDB = [];
-        public List<Item> ItemDB
+        private ObservableCollection<Item> _itemDB = [];
+        public ObservableCollection<Item> ItemDB
         {
             get { return _itemDB; }
             set
@@ -181,6 +183,7 @@ namespace L3_ItemCreator
             DataContext = this;
 
             //MFilePath = "No File";
+            /*
             ItemDB =
             [
                 new Item ( "Shadowmourne", "Legendary", "2H Axe", 10, true, "Pyramid" ),
@@ -190,24 +193,24 @@ namespace L3_ItemCreator
                 new Item ( "Apparatus of Khaz'goroth", "Epic", "Trinket", 256, false, "Sphere" ),
                 new Item ( "Common Leather Boots", "Common", "Boots", 674, false, "Cube" ),
                 new Item ( "Pebble", "Poor", "Junk", 89, true, "Sphere" ),
-            ];
-            
-            //myListBox.Items.Add("Item");
-            //itemDBListBox.ItemsSource = ItemDB;
+            ];//*/
         }
 
         private void Create_Button_Click(object sender, RoutedEventArgs e)
         {
-            //MFilePath = "123";
-            Debug.WriteLine(MFileName);
+            ItemDB.Add(new Item("Tarecgosa", "Legendary", "Staff", 454, false, "Pyramid"));
+            //foreach (var item in ItemDB)
+            //{
+            //    Debug.WriteLine(item.Mesh);
+            //}
         }
 
         private void Discard_Button_Click(object sender, RoutedEventArgs e)
         {
-            ItemDB[2].Name = "Fyralath";
-            ItemDB[2].Quality = "Uncommon";
-            ItemDB[2].Level = 496;
-            ItemDB[2].IType = "2H Axe";
+            ItemDB[0].Name = "Fyralath";
+            ItemDB[0].Quality = "Legendary";
+            ItemDB[0].Level = 496;
+            ItemDB[0].IType = "2H Axe";
         }
 
         private void NewMenuItem_Click(object sender, RoutedEventArgs e)
