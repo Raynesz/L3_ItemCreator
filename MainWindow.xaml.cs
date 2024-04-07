@@ -20,6 +20,8 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Xml.Linq;
+using System;
 
 namespace L3_ItemCreator
 {
@@ -182,7 +184,6 @@ namespace L3_ItemCreator
             InitializeComponent();
             DataContext = this;
 
-            //MFilePath = "No File";
             /*
             ItemDB =
             [
@@ -198,11 +199,44 @@ namespace L3_ItemCreator
 
         private void Create_Button_Click(object sender, RoutedEventArgs e)
         {
-            ItemDB.Add(new Item("Tarecgosa", "Legendary", "Staff", 454, false, "Pyramid"));
             //foreach (var item in ItemDB)
             //{
             //    Debug.WriteLine(item.Mesh);
             //}
+
+            if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
+                string.IsNullOrWhiteSpace(TypeTextBox.Text) ||
+                ItemQuality.SelectedItem == null ||
+                string.IsNullOrWhiteSpace(LevelTextBox.Text) ||
+                !MeshRadioButtonContainer.Children.OfType<RadioButton>().Any(rb => rb.IsChecked == true))
+            {
+                MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            string name = NameTextBox.Text;
+            string type = TypeTextBox.Text;
+            string? quality = (ItemQuality.SelectedItem as ComboBoxItem)?.Content.ToString();
+            int.TryParse(LevelTextBox.Text, out int level);
+            string? mesh = MeshRadioButtonContainer.Children.OfType<RadioButton>()
+                            .FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+            bool uniqueEquipped = UniqueEquippedCheckBox.IsChecked == true;
+
+            Item newItem = new(name, quality, type, level, uniqueEquipped, mesh);
+            ItemDB.Add(newItem);
+            ItemDB = new ObservableCollection<Item>(ItemDB.OrderBy(item => item.Name));
+
+            ClearInputFields();
+        }
+
+        private void ClearInputFields()
+        {
+            NameTextBox.Text = "";
+            TypeTextBox.Text = "";
+            ItemQuality.SelectedIndex = 1;
+            LevelTextBox.Text = "";
+            ((RadioButton)MeshRadioButtonContainer.Children[1]).IsChecked = true;
+            UniqueEquippedCheckBox.IsChecked = false;
         }
 
         private void Discard_Button_Click(object sender, RoutedEventArgs e)

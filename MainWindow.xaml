@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:L3_ItemCreator"
         mc:Ignorable="d"
         Title="L3::ItemCreator" Height="585" Width="321"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="#E0E0E0" VerticalAlignment="Top" >
@@ -24,11 +25,11 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Name:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <TextBox Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBox x:Name="NameTextBox" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Type:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <TextBox Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBox x:Name="TypeTextBox" Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Quality:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
@@ -41,16 +42,16 @@
                         <ComboBoxItem Content="Legendary" Foreground="#ff8000" />
                     </ComboBox>
                     <Label Content="Level:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="30,0,0,0" />
-                    <TextBox Width="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBox x:Name="LevelTextBox" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0">
                     <Label Content="Mesh:" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <StackPanel>
+                    <StackPanel x:Name="MeshRadioButtonContainer" >
                         <RadioButton Content="Cube" />
-                        <RadioButton Content="Sphere" />
+                        <RadioButton Content="Sphere" IsChecked="True" />
                         <RadioButton Content="Pyramid" />
                     </StackPanel>
-                    <CheckBox Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="55,0,0,0" />
+                    <CheckBox x:Name="UniqueEquippedCheckBox" Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="55,0,0,0" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,20,0,0">
                     <Button Content="Create" Click="Create_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25"/>
@@ -91,6 +92,8 @@
                             </TextBlock>
                             <TextBlock Text="{Binding Level, StringFormat=iLvl: {0}}" Margin="5" />
                             <TextBlock Text="{Binding IType}" Margin="5" />
+                            <TextBlock Text="{Binding Mesh}" Margin="5" />
+                            <TextBlock Text="{Binding UniqueEquipped}" Margin="5" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
