@@ -258,7 +258,11 @@ namespace L3_ItemCreator
 
         private void Delete_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            if (itemDBListBox.SelectedItem != null)
+            {
+                Item selectedItem = (Item)itemDBListBox.SelectedItem;
+                ItemDB.Remove(selectedItem);
+            }
         }
 
         private void NewMenuItem_Click(object sender, RoutedEventArgs e)
