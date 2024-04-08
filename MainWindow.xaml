@@ -15,10 +15,10 @@
                 <MenuItem Header="Open" Click="OpenExistingFile" InputGestureText="Ctrl+O"/>
                 <MenuItem Header="Save" InputGestureText="Ctrl+S" />
                 <Separator />
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Exit" Click="ExitMenuItem_Click" />
             </MenuItem>
             <MenuItem Header="Item">
-                <MenuItem Header="New Item" />
+                <MenuItem Header="New Item" Click="NewItem_Click" />
             </MenuItem>
         </Menu>
         <Grid DockPanel.Dock="Top" Background="#F0F0F0" Height="263" >
@@ -53,14 +53,16 @@
                     </StackPanel>
                     <CheckBox x:Name="UniqueEquippedCheckBox" Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="55,0,0,0" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,20,0,0">
-                    <Button Content="Create" Click="Create_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25"/>
-                    <Button Content="Discard" Click="Discard_Button_Click" Margin="15,0,0,0" Width="55"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,20,0,0" Visibility="Visible" >
+                    <Button x:Name="createButton" Content="Create" Click="Create_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25" Visibility="Visible" />
+                    <Button x:Name="discardButton" Content="Discard" Click="Discard_Button_Click" Margin="15,0,0,0" Width="55" Visibility="Collapsed" />
+                    <Button x:Name="saveButton" Content="Save" Click="Save_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0" Width="50" Height="25" Visibility="Collapsed" />
+                    <Button x:Name="deleteButton" Content="Delete" Click="Delete_Button_Click" Margin="15,0,0,0" Width="55"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
         <StackPanel DockPanel.Dock="Bottom" Height="288" >
-            <ListBox ItemsSource="{Binding ItemDB}" Width="305" Height="235">
+            <ListBox x:Name="itemDBListBox" ItemsSource="{Binding ItemDB}" SelectionChanged="itemDBListBox_SelectionChanged" Width="305" Height="235">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">

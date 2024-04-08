@@ -184,9 +184,16 @@ namespace L3_ItemCreator
             InitializeComponent();
             DataContext = this;
 
-            /*
+            //*
             ItemDB =
             [
+                new Item ( "Shadowmourne", "Legendary", "2H Axe", 10, true, "Pyramid" ),
+                new Item ( "Undaunting Breastplate", "Rare", "Chest", 340, false, "Cube" ),
+                new Item ( "Ashkandur", "Epic", "2H Sword", 456, true, "Pyramid" ),
+                new Item ( "Tiny Basket", "Uncommon", "Off-hand", 23, true, "Pyramid" ),
+                new Item ( "Apparatus of Khaz'goroth", "Epic", "Trinket", 256, false, "Sphere" ),
+                new Item ( "Common Leather Boots", "Common", "Boots", 674, false, "Cube" ),
+                new Item ( "Pebble", "Poor", "Junk", 89, true, "Sphere" ),
                 new Item ( "Shadowmourne", "Legendary", "2H Axe", 10, true, "Pyramid" ),
                 new Item ( "Undaunting Breastplate", "Rare", "Chest", 340, false, "Cube" ),
                 new Item ( "Ashkandur", "Epic", "2H Sword", 456, true, "Pyramid" ),
@@ -241,10 +248,17 @@ namespace L3_ItemCreator
 
         private void Discard_Button_Click(object sender, RoutedEventArgs e)
         {
-            ItemDB[0].Name = "Fyralath";
-            ItemDB[0].Quality = "Legendary";
-            ItemDB[0].Level = 496;
-            ItemDB[0].IType = "2H Axe";
+            ClearInputFields();
+        }
+
+        private void Save_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Delete_Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void NewMenuItem_Click(object sender, RoutedEventArgs e)
@@ -264,6 +278,70 @@ namespace L3_ItemCreator
                     //MessageBox.Show($"New file created: {filePath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             //}
+        }
+
+        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        private void itemDBListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (itemDBListBox.SelectedItem != null)
+            {
+                Item selectedItem = (Item)itemDBListBox.SelectedItem;
+                itemDBListBox.SelectedItem = selectedItem;
+
+                NameTextBox.Text = selectedItem.Name;
+                TypeTextBox.Text = selectedItem.IType;
+                ItemQuality.SelectedIndex = GetItemQualityIndex(selectedItem.Quality);
+                LevelTextBox.Text = selectedItem.Level.ToString();
+                ((RadioButton)MeshRadioButtonContainer.Children[GetMeshIndex(selectedItem.Mesh)]).IsChecked = true;
+                UniqueEquippedCheckBox.IsChecked = selectedItem.UniqueEquipped;
+
+                createButton.Visibility = Visibility.Collapsed;
+                discardButton.Visibility = Visibility.Collapsed;
+                saveButton.Visibility = Visibility.Visible;
+                deleteButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                createButton.Visibility = Visibility.Visible;
+                discardButton.Visibility = Visibility.Visible;
+                saveButton.Visibility = Visibility.Collapsed;
+                deleteButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private static int GetItemQualityIndex(string quality)
+        {
+            return quality switch
+            {
+                "Poor" => 0,
+                "Common" => 1,
+                "Uncommon" => 2,
+                "Rare" => 3,
+                "Epic" => 4,
+                "Legendary" => 5,
+                _ => 1,
+            };
+        }
+
+        private static int GetMeshIndex(string mesh)
+        {
+            return mesh switch
+            {
+                "Cube" => 0,
+                "Sphere" => 1,
+                "Pyramid" => 2,
+                _ => 1,
+            };
+        }
+
+        private void NewItem_Click(object sender, RoutedEventArgs e)
+        {
+            itemDBListBox.SelectedItem = null;
+            ClearInputFields();
         }
 
         public static string CreateNewFile(string filePath)
