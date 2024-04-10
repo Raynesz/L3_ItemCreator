@@ -231,7 +231,6 @@ namespace L3_ItemCreator
 
             Item newItem = new(name, quality, type, level, uniqueEquipped, mesh);
             ItemDB.Add(newItem);
-            ItemDB = new ObservableCollection<Item>(ItemDB.OrderBy(item => item.Name));
 
             ClearInputFields();
         }
@@ -253,7 +252,20 @@ namespace L3_ItemCreator
 
         private void Save_Button_Click(object sender, RoutedEventArgs e)
         {
+            if (itemDBListBox.SelectedItem != null)
+            {               
+                string name = NameTextBox.Text;
+                string type = TypeTextBox.Text;
+                string? quality = (ItemQuality.SelectedItem as ComboBoxItem)?.Content.ToString();
+                int.TryParse(LevelTextBox.Text, out int level);
+                string? mesh = MeshRadioButtonContainer.Children.OfType<RadioButton>()
+                                .FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+                bool uniqueEquipped = UniqueEquippedCheckBox.IsChecked == true;
 
+                Item selectedItem = (Item)itemDBListBox.SelectedItem;
+                int selectedIndex = ItemDB.IndexOf(selectedItem);
+                ItemDB[selectedIndex] = new(name, quality, type, level, uniqueEquipped, mesh);
+            }
         }
 
         private void Delete_Button_Click(object sender, RoutedEventArgs e)
@@ -314,6 +326,8 @@ namespace L3_ItemCreator
                 discardButton.Visibility = Visibility.Visible;
                 saveButton.Visibility = Visibility.Collapsed;
                 deleteButton.Visibility = Visibility.Collapsed;
+
+                ClearInputFields();
             }
         }
 
