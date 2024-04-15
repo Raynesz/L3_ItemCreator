@@ -97,20 +97,92 @@ namespace L3_ItemCreator
         }
     }
 
-    public class FileManager
+    public static class FileManager
     {
-        public string FilePath = "";
-        private readonly JsonSerializerOptions JsonSO = new() { WriteIndented = true };
+        private readonly static JsonSerializerOptions JsonSO = new() { WriteIndented = true };
 
-        public ObservableCollection<Item> LoadItems()
+        public static string NewFile ()
+        {
+            //MessageBoxResult result = MessageBox.Show("Do you want to create a new file?", "New File", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            //if (result == MessageBoxResult.Yes)
+            //{
+            SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                InitialDirectory = Directory.GetCurrentDirectory()
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filePath = saveFileDialog.FileName;
+                return CreateNewFile(filePath);
+                //MessageBox.Show($"New file created: {filePath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            } else
+            {
+                return "";
+            }
+            //}
+        }
+
+        public static string CreateNewFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                // Create the new file at the specified path
+                using (FileStream fs = File.Create(filePath))
+                {
+                    // byte[] initialContent = Encoding.UTF8.GetBytes("Initial content");
+                    // fs.Write(initialContent, 0, initialContent.Length);
+                }
+                return filePath;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "Error";
+            }
+        }
+
+        public static string OpenFile()
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new()
+                {
+                    Title = "Open File",
+                    Filter = "All Files (*.*)|*.*",
+                    InitialDirectory = Directory.GetCurrentDirectory()
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    return openFileDialog.FileName;
+                }
+                else
+                {
+                    return "";
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "";
+            }
+        }
+
+        public static ObservableCollection<Item> LoadItems(string filePath)
         {
             ObservableCollection<Item> items = [];
             try
             {
-                if (File.Exists(FilePath))
+                if (File.Exists(filePath))
                 {
-                    string json = File.ReadAllText(FilePath);
-                    items = JsonSerializer.Deserialize<ObservableCollection<Item>>(json);
+                    string json = File.ReadAllText(filePath);
+                    items = JsonSerializer.Deserialize<ObservableCollection<Item>>(json) ?? [];
                 }
             }
             catch (Exception ex)
@@ -120,13 +192,12 @@ namespace L3_ItemCreator
             return items;
         }
 
-        public void SaveItems(ObservableCollection<Item> items)
+        public static void SaveItems(ObservableCollection<Item> items, string filePath)
         {
             try
             {
-
                 string json = JsonSerializer.Serialize(items, JsonSO);
-                File.WriteAllText(FilePath, json);
+                File.WriteAllText(filePath, json);
             }
             catch (Exception ex)
             {
@@ -137,15 +208,11 @@ namespace L3_ItemCreator
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private string _mFileName = "No File";
-        public string MFileName
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
         {
-            get { return _mFileName; }
-            set
-            {
-                _mFileName = value;
-                OnPropertyChanged(nameof(MFileName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private string _mFilePath = "No File";
@@ -154,10 +221,17 @@ namespace L3_ItemCreator
             set
             {
                 _mFilePath = value;
-                MFileName = System.IO.Path.GetFileName(value);
                 OnPropertyChanged(nameof(MFilePath));
+                OnPropertyChanged(nameof(MFileName));
             }
         }
+
+        public string GetFileName ()
+        {
+            return System.IO.Path.GetFileName(MFilePath);
+        }
+
+        public string MFileName => GetFileName();
 
         private ObservableCollection<Item> _itemDB = [];
         public ObservableCollection<Item> ItemDB
@@ -168,15 +242,6 @@ namespace L3_ItemCreator
                 _itemDB = value;
                 OnPropertyChanged(nameof(ItemDB));
             }
-        }
-
-        public FileManager FM = new();
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public MainWindow()
@@ -206,11 +271,6 @@ namespace L3_ItemCreator
 
         private void Create_Button_Click(object sender, RoutedEventArgs e)
         {
-            //foreach (var item in ItemDB)
-            //{
-            //    Debug.WriteLine(item.Mesh);
-            //}
-
             if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
                 string.IsNullOrWhiteSpace(TypeTextBox.Text) ||
                 ItemQuality.SelectedItem == null ||
@@ -223,10 +283,13 @@ namespace L3_ItemCreator
 
             string name = NameTextBox.Text;
             string type = TypeTextBox.Text;
-            string? quality = (ItemQuality.SelectedItem as ComboBoxItem)?.Content.ToString();
-            int.TryParse(LevelTextBox.Text, out int level);
-            string? mesh = MeshRadioButtonContainer.Children.OfType<RadioButton>()
-                            .FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+            string quality = (ItemQuality.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Common";
+            if (!int.TryParse(LevelTextBox.Text, out int level)) level = 0;
+            string mesh = MeshRadioButtonContainer.Children
+                              .OfType<RadioButton>()
+                              .FirstOrDefault(r => r.IsChecked == true)?
+                              .Content?
+                              .ToString() ?? "Sphere";
             bool uniqueEquipped = UniqueEquippedCheckBox.IsChecked == true;
 
             Item newItem = new(name, quality, type, level, uniqueEquipped, mesh);
@@ -252,17 +315,20 @@ namespace L3_ItemCreator
 
         private void Save_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (itemDBListBox.SelectedItem != null)
+            if (ItemDBListBox.SelectedItem != null)
             {               
                 string name = NameTextBox.Text;
                 string type = TypeTextBox.Text;
-                string? quality = (ItemQuality.SelectedItem as ComboBoxItem)?.Content.ToString();
-                int.TryParse(LevelTextBox.Text, out int level);
-                string? mesh = MeshRadioButtonContainer.Children.OfType<RadioButton>()
-                                .FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+                string quality = (ItemQuality.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Common";
+                if (!int.TryParse(LevelTextBox.Text, out int level)) level = 0;
+                string mesh = MeshRadioButtonContainer.Children
+                              .OfType<RadioButton>()
+                              .FirstOrDefault(r => r.IsChecked == true)?
+                              .Content?
+                              .ToString() ?? "Sphere";
                 bool uniqueEquipped = UniqueEquippedCheckBox.IsChecked == true;
 
-                Item selectedItem = (Item)itemDBListBox.SelectedItem;
+                Item selectedItem = (Item)ItemDBListBox.SelectedItem;
                 int selectedIndex = ItemDB.IndexOf(selectedItem);
                 ItemDB[selectedIndex] = new(name, quality, type, level, uniqueEquipped, mesh);
             }
@@ -270,30 +336,32 @@ namespace L3_ItemCreator
 
         private void Delete_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (itemDBListBox.SelectedItem != null)
+            if (ItemDBListBox.SelectedItem != null)
             {
-                Item selectedItem = (Item)itemDBListBox.SelectedItem;
+                Item selectedItem = (Item)ItemDBListBox.SelectedItem;
                 ItemDB.Remove(selectedItem);
             }
         }
 
         private void NewMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            //MessageBoxResult result = MessageBox.Show("Do you want to create a new file?", "New File", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            //if (result == MessageBoxResult.Yes)
-            //{
-            SaveFileDialog saveFileDialog = new()
-            {
-                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                InitialDirectory = Directory.GetCurrentDirectory()
-            };
-            if (saveFileDialog.ShowDialog() == true)
-                {
-                    string filePath = saveFileDialog.FileName;
-                    MFilePath = CreateNewFile(filePath);
-                    //MessageBox.Show($"New file created: {filePath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            //}
+            MFilePath = FileManager.NewFile();
+        }
+
+        private void NewItem_Click(object sender, RoutedEventArgs e)
+        {
+            ItemDBListBox.SelectedItem = null;
+            ClearInputFields();
+        }
+
+        public void OpenExistingFile(object sender, RoutedEventArgs e)
+        {
+            MFilePath = FileManager.OpenFile();
+        }
+
+        private void SaveToFile(object sender, RoutedEventArgs e)
+        {
+            FileManager.SaveItems(ItemDB, MFilePath);
         }
 
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
@@ -301,12 +369,12 @@ namespace L3_ItemCreator
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void itemDBListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ItemDBListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (itemDBListBox.SelectedItem != null)
+            if (ItemDBListBox.SelectedItem != null)
             {
-                Item selectedItem = (Item)itemDBListBox.SelectedItem;
-                itemDBListBox.SelectedItem = selectedItem;
+                Item selectedItem = (Item)ItemDBListBox.SelectedItem;
+                ItemDBListBox.SelectedItem = selectedItem;
 
                 NameTextBox.Text = selectedItem.Name;
                 TypeTextBox.Text = selectedItem.IType;
@@ -354,63 +422,6 @@ namespace L3_ItemCreator
                 "Pyramid" => 2,
                 _ => 1,
             };
-        }
-
-        private void NewItem_Click(object sender, RoutedEventArgs e)
-        {
-            itemDBListBox.SelectedItem = null;
-            ClearInputFields();
-        }
-
-        public static string CreateNewFile(string filePath)
-        {
-            try
-            {
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                // Create the new file at the specified path
-                using (FileStream fs = File.Create(filePath))
-                {
-                    // byte[] initialContent = Encoding.UTF8.GetBytes("Initial content");
-                    // fs.Write(initialContent, 0, initialContent.Length);
-                }
-                return filePath;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                return "Error";
-            }
-        }
-
-        public void OpenExistingFile(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                OpenFileDialog openFileDialog = new()
-                {
-                    Title = "Open File",
-                    Filter = "All Files (*.*)|*.*",
-                    InitialDirectory = Directory.GetCurrentDirectory()
-                };
-
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    MFilePath = openFileDialog.FileName;
-                    return;
-                }
-                else
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
         }
     }
 }

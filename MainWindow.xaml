@@ -21,7 +21,7 @@
             <MenuItem Header="File">
                 <MenuItem Header="New"  Click="NewMenuItem_Click" InputGestureText="Ctrl+N" />
                 <MenuItem Header="Open" Click="OpenExistingFile" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="Save" InputGestureText="Ctrl+S" />
+                <MenuItem Header="Save" Click="SaveToFile" InputGestureText="Ctrl+S" />
                 <Separator />
                 <MenuItem Header="Exit" Click="ExitMenuItem_Click" />
             </MenuItem>
@@ -70,7 +70,7 @@
             </StackPanel>
         </Grid>
         <StackPanel DockPanel.Dock="Bottom" Height="288" >
-            <ListBox x:Name="itemDBListBox" ItemsSource="{Binding Source={StaticResource sortedItemDB}}" SelectionChanged="itemDBListBox_SelectionChanged" Width="305" Height="235">
+            <ListBox x:Name="ItemDBListBox" ItemsSource="{Binding Source={StaticResource sortedItemDB}}" SelectionChanged="ItemDBListBox_SelectionChanged" Width="305" Height="235">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -114,7 +114,7 @@
                         <Bold>
                             <Run Text="File: " />
                         </Bold>
-                        <Run Text="{Binding MFileName}" />
+                        <Run Text="{Binding MFileName, Mode=OneWay}" />
                     </TextBlock>
                 </StatusBarItem>
                 <Separator />
