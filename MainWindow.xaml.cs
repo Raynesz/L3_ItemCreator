@@ -108,12 +108,19 @@ namespace L3_ItemCreator
             //{
             SaveFileDialog saveFileDialog = new()
             {
-                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                Filter = "Text files(*.txt) | *.txt",
                 InitialDirectory = Directory.GetCurrentDirectory()
             };
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filePath = saveFileDialog.FileName;
+
+                if (!filePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Only .txt files are allowed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return "";
+                }
+
                 return CreateNewFile(filePath);
                 //MessageBox.Show($"New file created: {filePath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             } else
@@ -143,7 +150,7 @@ namespace L3_ItemCreator
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return "Error";
+                return "";
             }
         }
 
@@ -154,13 +161,19 @@ namespace L3_ItemCreator
                 OpenFileDialog openFileDialog = new()
                 {
                     Title = "Open File",
-                    Filter = "All Files (*.*)|*.*",
+                    Filter = "Text Files (*.txt)|*.txt",
                     InitialDirectory = Directory.GetCurrentDirectory()
                 };
 
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    return openFileDialog.FileName;
+                    string selectedFileName = openFileDialog.FileName;
+                    if (System.IO.Path.GetExtension(selectedFileName) != ".txt")
+                    {
+                        MessageBox.Show("Only .txt files are allowed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        throw new Exception();
+                    }
+                    return selectedFileName;
                 }
                 else
                 {
@@ -187,6 +200,7 @@ namespace L3_ItemCreator
             }
             catch (Exception ex)
             {
+                MessageBox.Show("Could not load from File.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Console.WriteLine($"Error loading items: {ex.Message}");
             }
             return items;
@@ -201,6 +215,7 @@ namespace L3_ItemCreator
             }
             catch (Exception ex)
             {
+                MessageBox.Show("Could not save to File.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Console.WriteLine($"Error saving items: {ex.Message}");
             }
         }
@@ -265,7 +280,7 @@ namespace L3_ItemCreator
             InitializeComponent();
             DataContext = this;
 
-            //*
+            /*
             ItemDB =
             [
                 new Item ( "Shadowmourne", "Legendary", "2H Axe", 10, true, "Pyramid" ),
@@ -306,6 +321,8 @@ namespace L3_ItemCreator
 
             Item newItem = new(name, quality, type, level, uniqueEquipped, mesh);
             ItemDB.Add(newItem);
+
+            FileManager.SaveItems(ItemDB, MFilePath);
 
             ClearInputFields();
         }
@@ -359,6 +376,8 @@ namespace L3_ItemCreator
                 Item selectedItem = (Item)ItemDBListBox.SelectedItem;
                 int selectedIndex = ItemDB.IndexOf(selectedItem);
                 ItemDB[selectedIndex] = new(name, quality, type, level, uniqueEquipped, mesh);
+
+                FileManager.SaveItems(ItemDB, MFilePath);
             }
         }
 
@@ -368,6 +387,7 @@ namespace L3_ItemCreator
             {
                 Item selectedItem = (Item)ItemDBListBox.SelectedItem;
                 ItemDB.Remove(selectedItem);
+                FileManager.SaveItems(ItemDB, MFilePath);
             }
         }
 
@@ -385,12 +405,12 @@ namespace L3_ItemCreator
         public void HandleMenuItem_Open(object sender, RoutedEventArgs e)
         {
             MFilePath = FileManager.OpenFile();
+            ItemDB = FileManager.LoadItems(MFilePath);
         }
 
         private void HandleMenuItem_Save(object sender, RoutedEventArgs e)
         {
-            //FileManager.SaveItems(ItemDB, MFilePath);
-            Debug.WriteLine("save");
+            FileManager.SaveItems(ItemDB, MFilePath);
         }
 
         private void HandleMenuItem_Exit(object sender, RoutedEventArgs e)
