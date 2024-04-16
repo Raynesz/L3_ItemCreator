@@ -289,7 +289,7 @@ namespace L3_ItemCreator
         {
             if (InputsAreInvalid())
             {
-                MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Please fill in all required fields with a proper value.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -322,6 +322,8 @@ namespace L3_ItemCreator
 
         private bool InputsAreInvalid() {
             return string.IsNullOrWhiteSpace(NameTextBox.Text) ||
+                NameTextBox.Text == "New Item" ||
+                NameTextBox.Text == "No File" ||
                 string.IsNullOrWhiteSpace(TypeTextBox.Text) ||
                 ItemQuality.SelectedItem == null ||
                 string.IsNullOrWhiteSpace(LevelTextBox.Text) ||
@@ -337,7 +339,7 @@ namespace L3_ItemCreator
         {
             if (InputsAreInvalid())
             {
-                MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Please fill in all required fields with a proper value.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
