@@ -215,7 +215,7 @@ namespace L3_ItemCreator
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string _mFilePath = "No File";
+        private string _mFilePath = "";
         public string MFilePath {
             get { return _mFilePath; }
             set
@@ -226,12 +226,23 @@ namespace L3_ItemCreator
             }
         }
 
-        public string GetFileName ()
+        private string GetFileName()
         {
-            return System.IO.Path.GetFileName(MFilePath);
+            string fileName = System.IO.Path.GetFileName(MFilePath);
+            if (fileName == "") return "No File";
+            else return fileName;
         }
 
         public string MFileName => GetFileName();
+
+        private string GetSelectedItemName()
+        {
+            Item SelectedItem = (Item)ItemDBListBox.SelectedItem;
+            if (SelectedItem == null) return "New Item";
+            return SelectedItem.Name; 
+        }
+
+        public string SelectedItemName => GetSelectedItemName();
 
         private ObservableCollection<Item> _itemDB = [];
         public ObservableCollection<Item> ItemDB
@@ -243,6 +254,11 @@ namespace L3_ItemCreator
                 OnPropertyChanged(nameof(ItemDB));
             }
         }
+
+        public readonly static RoutedCommand NewCommand = new();
+        public readonly static RoutedCommand OpenCommand = new();
+        public readonly static RoutedCommand SaveCommand = new();
+        public readonly static RoutedCommand NewItemCommand = new();
 
         public MainWindow()
         {
@@ -271,11 +287,7 @@ namespace L3_ItemCreator
 
         private void Create_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
-                string.IsNullOrWhiteSpace(TypeTextBox.Text) ||
-                ItemQuality.SelectedItem == null ||
-                string.IsNullOrWhiteSpace(LevelTextBox.Text) ||
-                !MeshRadioButtonContainer.Children.OfType<RadioButton>().Any(rb => rb.IsChecked == true))
+            if (InputsAreInvalid())
             {
                 MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -308,6 +320,14 @@ namespace L3_ItemCreator
             UniqueEquippedCheckBox.IsChecked = false;
         }
 
+        private bool InputsAreInvalid() {
+            return string.IsNullOrWhiteSpace(NameTextBox.Text) ||
+                string.IsNullOrWhiteSpace(TypeTextBox.Text) ||
+                ItemQuality.SelectedItem == null ||
+                string.IsNullOrWhiteSpace(LevelTextBox.Text) ||
+                !MeshRadioButtonContainer.Children.OfType<RadioButton>().Any(rb => rb.IsChecked == true);
+        }
+
         private void Discard_Button_Click(object sender, RoutedEventArgs e)
         {
             ClearInputFields();
@@ -315,6 +335,12 @@ namespace L3_ItemCreator
 
         private void Save_Button_Click(object sender, RoutedEventArgs e)
         {
+            if (InputsAreInvalid())
+            {
+                MessageBox.Show("Please fill in all required fields.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (ItemDBListBox.SelectedItem != null)
             {               
                 string name = NameTextBox.Text;
@@ -343,34 +369,36 @@ namespace L3_ItemCreator
             }
         }
 
-        private void NewMenuItem_Click(object sender, RoutedEventArgs e)
+        private void HandleMenuItem_New(object sender, RoutedEventArgs e)
         {
             MFilePath = FileManager.NewFile();
         }
 
-        private void NewItem_Click(object sender, RoutedEventArgs e)
+        private void HandleMenuItem_NewItem(object sender, RoutedEventArgs e)
         {
             ItemDBListBox.SelectedItem = null;
             ClearInputFields();
         }
 
-        public void OpenExistingFile(object sender, RoutedEventArgs e)
+        public void HandleMenuItem_Open(object sender, RoutedEventArgs e)
         {
             MFilePath = FileManager.OpenFile();
         }
 
-        private void SaveToFile(object sender, RoutedEventArgs e)
+        private void HandleMenuItem_Save(object sender, RoutedEventArgs e)
         {
-            FileManager.SaveItems(ItemDB, MFilePath);
+            //FileManager.SaveItems(ItemDB, MFilePath);
+            Debug.WriteLine("save");
         }
 
-        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+        private void HandleMenuItem_Exit(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
         }
 
         private void ItemDBListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            OnPropertyChanged(nameof(SelectedItemName));
             if (ItemDBListBox.SelectedItem != null)
             {
                 Item selectedItem = (Item)ItemDBListBox.SelectedItem;

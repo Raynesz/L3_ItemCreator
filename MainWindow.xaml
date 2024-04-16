@@ -4,29 +4,43 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-        xmlns:local="clr-namespace:L3_ItemCreator"
+        xmlns:local="clr-namespace:L3_ItemCreator" d:DataContext="{d:DesignInstance Type=local:Item}"
         mc:Ignorable="d"
         Title="L3::ItemCreator" Height="585" Width="321"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Icon="appicon.ico">
     <Window.Resources>
         <CollectionViewSource x:Key="sortedItemDB" Source="{Binding ItemDB}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+        <local:ForegroundColorConverter x:Key="ForegroundColorConverter" />
     </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="local:MainWindow.NewCommand" Executed="HandleMenuItem_New"/>
+        <CommandBinding Command="local:MainWindow.OpenCommand" Executed="HandleMenuItem_Open"/>
+        <CommandBinding Command="local:MainWindow.SaveCommand" Executed="HandleMenuItem_Save"/>
+        <CommandBinding Command="local:MainWindow.NewItemCommand" Executed="HandleMenuItem_NewItem"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="local:MainWindow.NewCommand" Key="N" Modifiers="Ctrl"/>
+        <KeyBinding Command="local:MainWindow.OpenCommand" Key="O" Modifiers="Ctrl"/>
+        <KeyBinding Command="local:MainWindow.SaveCommand" Key="S" Modifiers="Ctrl"/>
+        <KeyBinding Command="local:MainWindow.NewItemCommand" Key="D" Modifiers="Ctrl"/>
+    </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="#E0E0E0" VerticalAlignment="Top" >
             <MenuItem Header="File">
-                <MenuItem Header="New"  Click="NewMenuItem_Click" InputGestureText="Ctrl+N" />
-                <MenuItem Header="Open" Click="OpenExistingFile" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="Save" Click="SaveToFile" InputGestureText="Ctrl+S" />
+                <MenuItem Header="New"  Command="local:MainWindow.NewCommand" InputGestureText="Ctrl+N" />
+                <MenuItem Header="Open" Command="local:MainWindow.OpenCommand" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Save" Command="local:MainWindow.SaveCommand" InputGestureText="Ctrl+S" />
                 <Separator />
-                <MenuItem Header="Exit" Click="ExitMenuItem_Click" />
+                <MenuItem Header="Exit" Click="HandleMenuItem_Exit" />
             </MenuItem>
             <MenuItem Header="Item">
-                <MenuItem Header="New Item" Click="NewItem_Click" />
+                <MenuItem Header="New Item" Command="local:MainWindow.NewItemCommand" InputGestureText="Ctrl+D" />
             </MenuItem>
         </Menu>
         <Grid DockPanel.Dock="Top" Background="#F0F0F0" Height="263" >
@@ -109,12 +123,12 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <StatusBar Background="#E0E0E0" VerticalContentAlignment="Center" Height="30" >
-                <StatusBarItem>
+                <StatusBarItem MaxWidth="135">
                     <TextBlock Margin="5,0,0,0">
                         <Bold>
                             <Run Text="File: " />
                         </Bold>
-                        <Run Text="{Binding MFileName, Mode=OneWay}" />
+                        <Run Text="{Binding MFileName, Mode=OneWay}" Foreground="{Binding MFileName, Converter={StaticResource ForegroundColorConverter}}" />
                     </TextBlock>
                 </StatusBarItem>
                 <Separator />
@@ -123,7 +137,7 @@
                         <Bold>
                             <Run Text="Editing: " />
                         </Bold>
-                        <Run Text="Gorehowl" />
+                        <Run Text="{Binding SelectedItemName, Mode=OneWay}" Foreground="{Binding SelectedItemName, Converter={StaticResource ForegroundColorConverter}}" />
                     </TextBlock>
                 </StatusBarItem>
             </StatusBar>
