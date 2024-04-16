@@ -1,27 +1,12 @@
-﻿using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
-using static System.Net.Mime.MediaTypeNames;
 using System.IO;
 using System.Text.Json;
 using Microsoft.Win32;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.ObjectModel;
-using System.Xml.Linq;
-using System;
 
 namespace L3_ItemCreator
 {
@@ -168,7 +153,7 @@ namespace L3_ItemCreator
                 if (openFileDialog.ShowDialog() == true)
                 {
                     string selectedFileName = openFileDialog.FileName;
-                    if (System.IO.Path.GetExtension(selectedFileName) != ".txt")
+                    if (Path.GetExtension(selectedFileName) != ".txt")
                     {
                         MessageBox.Show("Only .txt files are allowed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         throw new Exception();
@@ -243,7 +228,7 @@ namespace L3_ItemCreator
 
         private string GetFileName()
         {
-            string fileName = System.IO.Path.GetFileName(MFilePath);
+            string fileName = Path.GetFileName(MFilePath);
             if (fileName == "") return "No File";
             else return fileName;
         }
@@ -415,7 +400,7 @@ namespace L3_ItemCreator
 
         private void HandleMenuItem_Exit(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private void ItemDBListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
