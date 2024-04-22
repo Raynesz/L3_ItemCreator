@@ -70,7 +70,7 @@
                     <StackPanel x:Name="MeshRadioButtonContainer" >
                         <RadioButton Content="Cube" />
                         <RadioButton Content="Sphere" IsChecked="True" />
-                        <RadioButton Content="Pyramid" />
+                        <RadioButton Content="Cone" />
                     </StackPanel>
                     <CheckBox x:Name="UniqueEquippedCheckBox" Content="Unique-Equipped" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="55,0,0,0" />
                 </StackPanel>

@@ -93,16 +93,16 @@ namespace L3_ItemCreator
             //{
             SaveFileDialog saveFileDialog = new()
             {
-                Filter = "Text files(*.txt) | *.txt",
+                Filter = "Json files(*.json) | *.json",
                 InitialDirectory = Directory.GetCurrentDirectory()
             };
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filePath = saveFileDialog.FileName;
 
-                if (!filePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                if (!filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
-                    MessageBox.Show("Only .txt files are allowed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Only .json files are allowed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return "";
                 }
 
@@ -146,16 +146,16 @@ namespace L3_ItemCreator
                 OpenFileDialog openFileDialog = new()
                 {
                     Title = "Open File",
-                    Filter = "Text Files (*.txt)|*.txt",
+                    Filter = "JSON Files (*.json)|*.json",
                     InitialDirectory = Directory.GetCurrentDirectory()
                 };
 
                 if (openFileDialog.ShowDialog() == true)
                 {
                     string selectedFileName = openFileDialog.FileName;
-                    if (Path.GetExtension(selectedFileName) != ".txt")
+                    if (Path.GetExtension(selectedFileName) != ".json")
                     {
-                        MessageBox.Show("Only .txt files are allowed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Only .json files are allowed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         throw new Exception();
                     }
                     return selectedFileName;
@@ -264,25 +264,6 @@ namespace L3_ItemCreator
         {
             InitializeComponent();
             DataContext = this;
-
-            /*
-            ItemDB =
-            [
-                new Item ( "Shadowmourne", "Legendary", "2H Axe", 10, true, "Pyramid" ),
-                new Item ( "Undaunting Breastplate", "Rare", "Chest", 340, false, "Cube" ),
-                new Item ( "Ashkandur", "Epic", "2H Sword", 456, true, "Pyramid" ),
-                new Item ( "Tiny Basket", "Uncommon", "Off-hand", 23, true, "Pyramid" ),
-                new Item ( "Apparatus of Khaz'goroth", "Epic", "Trinket", 256, false, "Sphere" ),
-                new Item ( "Common Leather Boots", "Common", "Boots", 674, false, "Cube" ),
-                new Item ( "Pebble", "Poor", "Junk", 89, true, "Sphere" ),
-                new Item ( "Shadowmourne", "Legendary", "2H Axe", 10, true, "Pyramid" ),
-                new Item ( "Undaunting Breastplate", "Rare", "Chest", 340, false, "Cube" ),
-                new Item ( "Ashkandur", "Epic", "2H Sword", 456, true, "Pyramid" ),
-                new Item ( "Tiny Basket", "Uncommon", "Off-hand", 23, true, "Pyramid" ),
-                new Item ( "Apparatus of Khaz'goroth", "Epic", "Trinket", 256, false, "Sphere" ),
-                new Item ( "Common Leather Boots", "Common", "Boots", 674, false, "Cube" ),
-                new Item ( "Pebble", "Poor", "Junk", 89, true, "Sphere" ),
-            ];//*/
         }
 
         private void Create_Button_Click(object sender, RoutedEventArgs e)
@@ -454,7 +435,7 @@ namespace L3_ItemCreator
             {
                 "Cube" => 0,
                 "Sphere" => 1,
-                "Pyramid" => 2,
+                "Cone" => 2,
                 _ => 1,
             };
         }
