@@ -94,8 +94,8 @@ namespace L3_ItemCreator
             SaveFileDialog saveFileDialog = new()
             {
                 Filter = "Json files(*.json) | *.json",
-                InitialDirectory = Directory.GetCurrentDirectory()
-            };
+                InitialDirectory = Path.Combine(Directory.GetCurrentDirectory(), "L3", "Content", "Data")
+        };
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filePath = saveFileDialog.FileName;
@@ -147,8 +147,8 @@ namespace L3_ItemCreator
                 {
                     Title = "Open File",
                     Filter = "JSON Files (*.json)|*.json",
-                    InitialDirectory = Directory.GetCurrentDirectory()
-                };
+                    InitialDirectory = Path.Combine(Directory.GetCurrentDirectory(), "L3", "Content", "Data")
+            };
 
                 if (openFileDialog.ShowDialog() == true)
                 {

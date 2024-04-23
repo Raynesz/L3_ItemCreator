@@ -7,12 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <Copyright>Copyright © 2024 Raynesz</Copyright>
-    <ApplicationIcon>appicon.ico</ApplicationIcon>
     <AssemblyName>L3 Item Creator</AssemblyName>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="appicon.ico" />
-  </ItemGroup>
 
 </Project>
